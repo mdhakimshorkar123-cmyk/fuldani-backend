@@ -1,9 +1,9 @@
 import type { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { env } from '../config/env';
-import { prisma } from '../lib/prisma';
-import { HttpError } from '../lib/http';
-import type { Role } from '../generated/prisma/client';
+import { env } from '../config/env.js';
+import { prisma } from '../lib/prisma.js';
+import { HttpError } from '../lib/http.js';
+import type { Role } from '../generated/prisma/client.js';
 
 export const AUTH_COOKIE = 'sf_admin';
 

@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { prisma } from '../../lib/prisma';
-import { cached, TTL } from '../../lib/cache';
-import { parse } from '../../lib/http';
-import { requireAdmin } from '../../middleware/auth';
-import { LOW_STOCK_THRESHOLD } from '../products/products.service';
+import { prisma } from '../../lib/prisma.js';
+import { cached, TTL } from '../../lib/cache.js';
+import { parse } from '../../lib/http.js';
+import { requireAdmin } from '../../middleware/auth.js';
+import { LOW_STOCK_THRESHOLD } from '../products/products.service.js';
 
 const TZ = 'Asia/Dhaka';
 const EXCLUDED = ['CANCELLED', 'RETURNED'] as const;

@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { prisma } from '../../lib/prisma';
-import { cached, invalidate, TTL } from '../../lib/cache';
-import { parse } from '../../lib/http';
-import { requireAdmin } from '../../middleware/auth';
+import { prisma } from '../../lib/prisma.js';
+import { cached, invalidate, TTL } from '../../lib/cache.js';
+import { parse } from '../../lib/http.js';
+import { requireAdmin } from '../../middleware/auth.js';
 
 const shape = {
   name: z.string().trim().min(2).max(80),

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { normalizeBdPhone } from '../../lib/utils';
+import { normalizeBdPhone } from '../../lib/utils.js';
 
 export const ORDER_STATUSES = [
   'PENDING',

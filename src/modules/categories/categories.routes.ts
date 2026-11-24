@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { prisma } from '../../lib/prisma';
-import { cached, invalidate, TTL } from '../../lib/cache';
-import { HttpError, parse } from '../../lib/http';
-import { slugify } from '../../lib/utils';
-import { requireAdmin } from '../../middleware/auth';
+import { prisma } from '../../lib/prisma.js';
+import { cached, invalidate, TTL } from '../../lib/cache.js';
+import { HttpError, parse } from '../../lib/http.js';
+import { slugify } from '../../lib/utils.js';
+import { requireAdmin } from '../../middleware/auth.js';
 
 const shape = {
   name: z.string().trim().min(2).max(80),

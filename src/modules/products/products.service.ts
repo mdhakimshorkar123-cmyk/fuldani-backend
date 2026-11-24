@@ -1,10 +1,10 @@
 import type { z } from 'zod';
-import { Prisma } from '../../generated/prisma/client';
-import { prisma } from '../../lib/prisma';
-import { cached, invalidate, keyOf, TTL } from '../../lib/cache';
-import { HttpError, paginate } from '../../lib/http';
-import { shortId, slugify } from '../../lib/utils';
-import type { AdminProductListQuery, ProductInputT, ProductListQuery, ProductPatchT } from './products.schema';
+import { Prisma } from '../../generated/prisma/client.js';
+import { prisma } from '../../lib/prisma.js';
+import { cached, invalidate, keyOf, TTL } from '../../lib/cache.js';
+import { HttpError, paginate } from '../../lib/http.js';
+import { shortId, slugify } from '../../lib/utils.js';
+import type { AdminProductListQuery, ProductInputT, ProductListQuery, ProductPatchT } from './products.schema.js';
 
 export const LOW_STOCK_THRESHOLD = 5;
 

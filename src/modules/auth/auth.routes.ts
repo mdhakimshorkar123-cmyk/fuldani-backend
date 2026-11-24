@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
-import { prisma } from '../../lib/prisma';
-import { HttpError, parse } from '../../lib/http';
-import { clearAuthCookie, requireAdmin, setAuthCookie, signToken } from '../../middleware/auth';
-import { loginLimiter } from '../../middleware/rate-limit';
+import { prisma } from '../../lib/prisma.js';
+import { HttpError, parse } from '../../lib/http.js';
+import { clearAuthCookie, requireAdmin, setAuthCookie, signToken } from '../../middleware/auth.js';
+import { loginLimiter } from '../../middleware/rate-limit.js';
 
 const LoginSchema = z.object({
   email: z.string().trim().toLowerCase().email(),

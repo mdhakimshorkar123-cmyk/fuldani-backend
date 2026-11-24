@@ -1,16 +1,16 @@
 import type { z } from 'zod';
-import type { Prisma } from '../../generated/prisma/client';
-import { prisma } from '../../lib/prisma';
-import { invalidate } from '../../lib/cache';
-import { HttpError, paginate } from '../../lib/http';
-import { generateOrderCode, normalizeBdPhone } from '../../lib/utils';
+import type { Prisma } from '../../generated/prisma/client.js';
+import { prisma } from '../../lib/prisma.js';
+import { invalidate } from '../../lib/cache.js';
+import { HttpError, paginate } from '../../lib/http.js';
+import { generateOrderCode, normalizeBdPhone } from '../../lib/utils.js';
 import {
   type AdminOrderListQuery,
   type CreateOrderInputT,
   type OrderStatusT,
   RESTOCK_STATUSES,
   STATUS_TRANSITIONS,
-} from './orders.schema';
+} from './orders.schema.js';
 
 // ── Public: place an order ────────────────────────────────────
 

@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
-import { isRedisReady, redis } from './redis';
-import { logger } from './logger';
+import { isRedisReady, redis } from './redis.js';
+import { logger } from './logger.js';
 
 const PREFIX = 'sf';
 

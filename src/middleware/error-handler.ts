@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
-import { HttpError } from '../lib/http';
-import { logger } from '../lib/logger';
-import { env } from '../config/env';
+import { HttpError } from '../lib/http.js';
+import { logger } from '../lib/logger.js';
+import { env } from '../config/env.js';
 
 function isPrismaKnownError(err: unknown): err is { code: string; meta?: Record<string, unknown> } {
   return (

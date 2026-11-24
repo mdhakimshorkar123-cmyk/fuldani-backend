@@ -1,15 +1,15 @@
 import { Router } from 'express';
-import { parse } from '../../lib/http';
-import { requireAdmin } from '../../middleware/auth';
-import { orderLimiter } from '../../middleware/rate-limit';
+import { parse } from '../../lib/http.js';
+import { requireAdmin } from '../../middleware/auth.js';
+import { orderLimiter } from '../../middleware/rate-limit.js';
 import {
   AdminOrderListQuery,
   CreateOrderInput,
   TrackOrderQuery,
   UpdateOrderInput,
   UpdateStatusInput,
-} from './orders.schema';
-import * as service from './orders.service';
+} from './orders.schema.js';
+import * as service from './orders.service.js';
 
 // ── Public: /api/orders ───────────────────────────────────────
 export const ordersRouter = Router();

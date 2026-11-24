@@ -18,7 +18,10 @@ if (!parsed.success) {
   for (const issue of parsed.error.issues) {
     console.error(`   • ${issue.path.join('.')}: ${issue.message}`);
   }
-  process.exit(1);
+  // Throw (not process.exit) so serverless platforms like Vercel log the reason.
+  throw new Error(
+    'Invalid environment variables: ' + parsed.error.issues.map((i) => i.path.join('.')).join(', ') + ' — set them in .env or your hosting dashboard.',
+  );
 }
 
 export const env = {

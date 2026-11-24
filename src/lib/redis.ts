@@ -1,6 +1,6 @@
 import { Redis } from 'ioredis';
-import { env } from '../config/env';
-import { logger } from './logger';
+import { env } from '../config/env.js';
+import { logger } from './logger.js';
 
 /**
  * Redis is optional. When REDIS_URL is missing or the server is unreachable,

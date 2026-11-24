@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { HttpError, parse } from '../../lib/http';
-import { requireAdmin } from '../../middleware/auth';
-import { AdminProductListQuery, ProductInput, ProductListQuery, ProductPatch } from './products.schema';
-import * as service from './products.service';
+import { HttpError, parse } from '../../lib/http.js';
+import { requireAdmin } from '../../middleware/auth.js';
+import { AdminProductListQuery, ProductInput, ProductListQuery, ProductPatch } from './products.schema.js';
+import * as service from './products.service.js';
 
 // ── Public: /api/products ─────────────────────────────────────
 export const productsRouter = Router();
