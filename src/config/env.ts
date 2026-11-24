@@ -26,6 +26,7 @@ if (!parsed.success) {
 
 export const env = {
   ...parsed.data,
-  isProd: parsed.data.NODE_ENV === 'production',
+  // Vercel doesn't always set NODE_ENV=production for functions; treat any Vercel runtime as prod.
+  isProd: parsed.data.NODE_ENV === 'production' || Boolean(process.env.VERCEL),
   corsOrigins: parsed.data.CORS_ORIGINS.split(',').map((o) => o.trim()).filter(Boolean),
 };
