@@ -73,3 +73,11 @@ export function createApp() {
 
   return app;
 }
+
+/**
+ * Single app instance. Vercel picks up this default export from `src/app.ts`
+ * and serves it as a serverless function; `src/index.ts` uses it for a
+ * long-running server (local dev, Render, Railway, VPS).
+ */
+const app = createApp();
+export default app;

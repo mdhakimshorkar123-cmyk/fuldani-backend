@@ -1,10 +1,8 @@
 import { env } from './config/env';
-import { createApp } from './app';
+import app from './app';
 import { logger } from './lib/logger';
 import { prisma } from './lib/prisma';
 import { redis } from './lib/redis';
-
-const app = createApp();
 
 const server = app.listen(env.PORT, () => {
   logger.info(`🌸 Shopno Fuldani API running on http://localhost:${env.PORT} (${env.NODE_ENV})`);
