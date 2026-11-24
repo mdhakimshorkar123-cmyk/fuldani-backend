@@ -1,0 +1,208 @@
+// Shopno Fuldani — database schema (Neon Postgres via Prisma 7)
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "esm"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────────────────────────────────────
+// Admin users
+// ─────────────────────────────────────────────────────────────
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  STAFF
+}
+
+model User {
+  id           String    @id @default(cuid())
+  name         String
+  email        String    @unique
+  passwordHash String
+  role         Role      @default(ADMIN)
+  isActive     Boolean   @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  statusChanges OrderStatusLog[]
+}
+
+// ─────────────────────────────────────────────────────────────
+// Catalog
+// ─────────────────────────────────────────────────────────────
+
+model Category {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  name        String
+  description String?
+  image       String?
+  sortOrder   Int       @default(0)
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  products Product[]
+
+  @@index([isActive, sortOrder])
+}
+
+enum BadgeType {
+  BESTSELLER
+  POPULAR
+  NEW
+  OFFER
+}
+
+model Product {
+  id           String     @id @default(cuid())
+  slug         String     @unique
+  name         String
+  typeLabel    String?    // e.g. "🌸 প্রিমিয়াম সিল্ক ফুল সেট"
+  description  String?
+  /// Prices are whole Taka (BDT)
+  price        Int
+  comparePrice Int?
+  stock        Int        @default(0)
+  badgeLabel   String?
+  badgeType    BadgeType?
+  rating       Float      @default(0)
+  reviewCount  Int        @default(0)
+  images       String[]
+  isActive     Boolean    @default(true)
+  isFeatured   Boolean    @default(false)
+  sortOrder    Int        @default(0)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  colors     ProductColor[]
+  categories Category[]
+  orderItems OrderItem[]
+
+  @@index([isActive, sortOrder])
+  @@index([isActive, createdAt])
+  @@index([isFeatured])
+}
+
+model ProductColor {
+  id        String  @id @default(cuid())
+  productId String
+  name      String
+  hex       String
+  sortOrder Int     @default(0)
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+}
+
+// ─────────────────────────────────────────────────────────────
+// Storefront content
+// ─────────────────────────────────────────────────────────────
+
+/// "Where to use" event cards shown in the hero marquee
+model Showcase {
+  id        String   @id @default(cuid())
+  title     String
+  tag       String
+  image     String
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive, sortOrder])
+}
+
+model DeliveryZone {
+  id        String   @id @default(cuid())
+  name      String
+  fee       Int
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders Order[]
+}
+
+// ─────────────────────────────────────────────────────────────
+// Orders (Cash on Delivery)
+// ─────────────────────────────────────────────────────────────
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  RETURNED
+}
+
+model Order {
+  id               String      @id @default(cuid())
+  code             String      @unique // public reference, e.g. SF-7K3QX9
+  customerName     String
+  phone            String
+  address          String
+  note             String?
+  deliveryZoneId   String?
+  deliveryZoneName String
+  deliveryFee      Int
+  subtotal         Int
+  total            Int
+  paymentMethod    String      @default("COD")
+  status           OrderStatus @default(PENDING)
+  adminNote        String?
+  ipAddress        String?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  deliveryZone DeliveryZone?    @relation(fields: [deliveryZoneId], references: [id], onDelete: SetNull)
+  items        OrderItem[]
+  statusLogs   OrderStatusLog[]
+
+  @@index([status, createdAt])
+  @@index([createdAt])
+  @@index([phone])
+}
+
+model OrderItem {
+  id           String  @id @default(cuid())
+  orderId      String
+  productId    String?
+  productName  String
+  productImage String?
+  colorName    String?
+  unitPrice    Int
+  quantity     Int
+  lineTotal    Int
+
+  order   Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+model OrderStatusLog {
+  id          String      @id @default(cuid())
+  orderId     String
+  status      OrderStatus
+  note        String?
+  changedById String?
+  createdAt   DateTime    @default(now())
+
+  order     Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  changedBy User? @relation(fields: [changedById], references: [id], onDelete: SetNull)
+
+  @@index([orderId, createdAt])
+}
