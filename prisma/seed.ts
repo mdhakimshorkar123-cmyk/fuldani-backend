@@ -3,7 +3,7 @@
  *   npm run db:seed
  */
 import 'dotenv/config';
-import bcrypt from 'bcryptjs';
+import { hash } from 'bcryptjs';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient, type BadgeType } from '../src/generated/prisma/client.js';
 
@@ -182,7 +182,7 @@ async function main() {
     create: {
       email,
       name: process.env.SEED_ADMIN_NAME ?? 'Super Admin',
-      passwordHash: await bcrypt.hash(password, 12),
+      passwordHash: await hash(password, 12),
       role: 'SUPER_ADMIN',
     },
   });

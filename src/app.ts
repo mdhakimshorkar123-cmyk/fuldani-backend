@@ -1,5 +1,5 @@
 import express, { Router } from 'express';
-import helmet from 'helmet';
+import * as helmetModule from 'helmet';
 import cors from 'cors';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
@@ -17,6 +17,15 @@ import { adminOrdersRouter, ordersRouter } from './modules/orders/orders.routes.
 import { adminDeliveryZonesRouter, deliveryZonesRouter } from './modules/delivery-zones/delivery-zones.routes.js';
 import { adminShowcasesRouter, showcasesRouter } from './modules/showcases/showcases.routes.js';
 import { adminDashboardRouter } from './modules/dashboard/dashboard.routes.js';
+
+/**
+ * helmet ships separate ESM/CJS typings; depending on how the host compiles
+ * TypeScript (e.g. Vercel), a default import can resolve to the module
+ * namespace instead of the function. `.default` exists in every mode.
+ */
+type HelmetFn = typeof helmetModule.default;
+const helmet: HelmetFn =
+  (helmetModule as unknown as { default?: HelmetFn }).default ?? (helmetModule as unknown as HelmetFn);
 
 export function createApp() {
   const app = express();

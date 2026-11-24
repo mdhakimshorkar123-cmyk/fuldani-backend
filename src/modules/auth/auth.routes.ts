@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import bcrypt from 'bcryptjs';
+import { compare, hash, hashSync } from 'bcryptjs';
 import { z } from 'zod';
 import { prisma } from '../../lib/prisma.js';
 import { HttpError, parse } from '../../lib/http.js';
@@ -17,7 +17,7 @@ const ChangePasswordSchema = z.object({
 });
 
 // Used to keep login timing constant when the email doesn't exist.
-const DUMMY_HASH = bcrypt.hashSync('timing-safe-dummy', 10);
+const DUMMY_HASH = hashSync('timing-safe-dummy', 10);
 
 export const authRouter = Router();
 
@@ -25,7 +25,7 @@ authRouter.post('/login', loginLimiter, async (req, res) => {
   const { email, password } = parse(LoginSchema, req.body);
 
   const user = await prisma.user.findUnique({ where: { email } });
-  const ok = await bcrypt.compare(password, user?.passwordHash ?? DUMMY_HASH);
+  const ok = await compare(password, user?.passwordHash ?? DUMMY_HASH);
   if (!user || !ok || !user.isActive) throw HttpError.unauthorized('ইমেইল বা পাসওয়ার্ড ভুল (Invalid credentials)');
 
   await prisma.user.update({ where: { id: user.id }, data: { lastLoginAt: new Date() } });
@@ -46,12 +46,12 @@ authRouter.get('/me', requireAdmin(), (req, res) => {
 authRouter.post('/change-password', requireAdmin(), async (req, res) => {
   const { currentPassword, newPassword } = parse(ChangePasswordSchema, req.body);
   const user = await prisma.user.findUniqueOrThrow({ where: { id: req.admin!.id } });
-  if (!(await bcrypt.compare(currentPassword, user.passwordHash))) {
+  if (!(await compare(currentPassword, user.passwordHash))) {
     throw HttpError.badRequest('Current password is incorrect');
   }
   await prisma.user.update({
     where: { id: user.id },
-    data: { passwordHash: await bcrypt.hash(newPassword, 12) },
+    data: { passwordHash: await hash(newPassword, 12) },
   });
   res.status(204).end();
 });
