@@ -1,4 +1,4 @@
-import express, { Router } from 'express';
+import express, { Router, type RequestHandler } from 'express';
 import * as helmetModule from 'helmet';
 import cors from 'cors';
 import compression from 'compression';
@@ -19,13 +19,15 @@ import { adminShowcasesRouter, showcasesRouter } from './modules/showcases/showc
 import { adminDashboardRouter } from './modules/dashboard/dashboard.routes.js';
 
 /**
- * helmet ships separate ESM/CJS typings; depending on how the host compiles
- * TypeScript (e.g. Vercel), a default import can resolve to the module
- * namespace instead of the function. `.default` exists in every mode.
+ * helmet ships separate ESM/CJS typings, and on Vercel's TypeScript build
+ * both the default import and `typeof helmetModule.default` resolve to the
+ * module namespace (not callable). So we declare the call signature ourselves
+ * instead of borrowing helmet's types. At runtime `.default` is the function
+ * in both ESM and CJS builds of helmet.
  */
-type HelmetFn = typeof helmetModule.default;
-const helmet: HelmetFn =
-  (helmetModule as unknown as { default?: HelmetFn }).default ?? (helmetModule as unknown as HelmetFn);
+type HelmetFn = (options?: Record<string, unknown>) => RequestHandler;
+const helmetExport = helmetModule as unknown as { default?: HelmetFn };
+const helmet: HelmetFn = helmetExport.default ?? (helmetModule as unknown as HelmetFn);
 
 export function createApp() {
   const app = express();
